@@ -1,0 +1,47 @@
+/* index.css - topo do arquivo */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --jw-primary: #0d6e6e;
+  --jw-primary-dark: #08504f;
+  --jw-secondary: #2b8a8a;
+  --jw-accent: #f4a259;
+  --jw-bg-light: #f4f9f9;
+  --jw-text-dark: #1c2b2b;
+  --jw-text-muted: #5a6b6b;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", -apple-system, Roboto, sans-serif;
+  color: var(--jw-text-dark);
+  background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.logo-hero {
+  max-width: 250px;   /* ajuste o tamanho que quiser */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Navbar customizado */
+.nav-link-jw {
+  color: var(--jw-text-dark) !important;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.nav-link-jw:hover {
+  color: var(--jw-primary) !important;
+}
+
