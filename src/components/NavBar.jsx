@@ -32,6 +32,7 @@ export default function Navbar() {
             >
               Para Quem
             </Nav.Link>
+            
             <Nav.Link
               href="#recursos"
               onClick={() => setExpanded(false)}
@@ -39,6 +40,14 @@ export default function Navbar() {
             >
               Recursos
             </Nav.Link>
+            <Nav.Link
+  href="#planos"
+  onClick={() => setExpanded(false)}
+  className="nav-link-jw"
+>
+  Planos
+</Nav.Link>
+
             <Nav.Link
               href="#contato"
               onClick={() => setExpanded(false)}

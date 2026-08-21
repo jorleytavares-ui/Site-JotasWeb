@@ -6,6 +6,7 @@ import Recursos from "./components/Recursos";
 import FormCadastroTrial from "./components/FormCadastroTrial";
 import ContatoSection from "./components/ContatoSection";
 import Footer from "./components/Footer";
+import PlanosSection from "./components/PlanosSection";
 import "./index.css";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Hero onIniciarTrial={() => setMostrarForm(true)} />
       <ParaQuem />
       <Recursos />
+      <PlanosSection />
       {mostrarForm && (
         <FormCadastroTrial onStatusChange={setEmpresaJaExiste} />
       )}
