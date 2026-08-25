@@ -14,9 +14,11 @@ export default function Navbar() {
       onToggle={(val) => setExpanded(val)}
     >
       <Container>
-        <BsNavbar.Brand href="/">
-          <img src="/logo.png" alt="JotasWeb" className="logo-hero" style={{ height: "50px" }}/>
-        </BsNavbar.Brand>
+        <BsNavbar.Brand href="/" className="d-flex align-items-center gap-2">
+  <img src="/logo.png" alt="JotasWeb" className="logo-hero" style={{ height: "50px" }}/>
+  <span style={{ fontWeight: "bold", color: "var(--jw-primary)" }}>JotasWeb</span>
+</BsNavbar.Brand>
+
 
         <BsNavbar.Toggle
           aria-controls="main-navbar"
