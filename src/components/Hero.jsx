@@ -19,11 +19,12 @@ function Hero({ onIniciarTrial }) {
     >
       <Container className="text-center py-5">
         <h1 className="fw-bold display-5 mb-3">
-          Gestão completa para Casas de Apoio
+          Sistema para Casa de Apoio a Pacientes
         </h1>
         <p className="lead mb-4">
-          Organize pacientes, transporte, exames e parcerias com prefeituras em um só sistema.
-          Teste grátis por 5 dias, sem compromisso.
+          Gestão completa de hospedagem, transporte, exames e diárias de{" "}
+          <strong>Tratamento Fora do Domicílio (TFD)</strong>. Organize contratos com
+          prefeituras e feche o mês em minutos. Teste grátis por 5 dias, sem compromisso.
         </p>
         <div className="d-flex justify-content-center gap-3 flex-wrap">
           <Button

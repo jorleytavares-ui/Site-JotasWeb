@@ -2,8 +2,8 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 
 const recursos = [
   {
-    titulo: "Gestão de Internação",
-    descricao: "Controle completo de entrada, saída e diárias dos pacientes hospedados.",
+    titulo: "Gestão de Hospedagem de Pacientes",
+    descricao: "Controle completo de entrada, saída e diárias dos pacientes hospedados em tratamento fora do domicílio (TFD).",
     icone: "🏠",
   },
   {
@@ -18,7 +18,7 @@ const recursos = [
   },
   {
     titulo: "Parcerias com Prefeituras",
-    descricao: "Gestão de convênios municipais e relatórios de faturamento por diárias.",
+    descricao: "Gestão de convênios municipais e relatórios de faturamento por diárias para prestação de contas.",
     icone: "🤝",
   },
   {
@@ -28,7 +28,7 @@ const recursos = [
   },
   {
     titulo: "Acesso na Nuvem",
-    descricao: "Acesse de qualquer lugar, com segurança, a qualquer hora do dia.",
+    descricao: "Acesse o sistema de gestão da sua casa de apoio de qualquer lugar, com segurança, a qualquer hora do dia.",
     icone: "☁️",
   },
 ];
@@ -36,11 +36,13 @@ const recursos = [
 function Recursos() {
   return (
     <section id="recursos" className="py-5" style={{ backgroundColor: "var(--jw-bg-light)" }}>
-
       <Container>
-        <h2 className="text-center fw-bold mb-2">Feito para Casas de Apoio</h2>
+        <h2 className="text-center fw-bold mb-2">
+          Recursos do Sistema para Casa de Apoio a Pacientes
+        </h2>
         <p className="text-center mb-5" style={{ color: "var(--jw-text-muted)" }}>
-          Tudo que você precisa para gerenciar pacientes, transporte e parcerias em um só lugar.
+          Tudo que sua casa de apoio precisa para gerenciar pacientes, transporte,
+          diárias de TFD e parcerias com prefeituras em um só lugar.
         </p>
         <Row className="g-4">
           {recursos.map((item, index) => (

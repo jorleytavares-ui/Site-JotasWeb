@@ -1,4 +1,4 @@
-// ParaQuem.jsx (renomeado — conteúdo igual ao enviado)
+// ParaQuem.jsx (SEO otimizado)
 import { Container, Row, Col, Card } from "react-bootstrap";
 
 const pilares = [
@@ -6,11 +6,11 @@ const pilares = [
     icone: "🏠",
     titulo: "Hospedagem de Pacientes",
     descricao:
-      "Controle de entrada, saída e diárias dos pacientes que chegam de outras cidades para tratamento.",
+      "Controle de entrada, saída e diárias dos pacientes que chegam de outras cidades para tratamento (TFD).",
   },
   {
     icone: "🚐",
-    titulo: "Transporte para Consultas",
+    titulo: "Transporte de Pacientes",
     descricao:
       "Agenda de motoristas e veículos para levar e buscar pacientes em clínicas, hospitais e laboratórios.",
   },
@@ -31,20 +31,20 @@ const pilares = [
 function ParaQuem() {
   return (
     <section id="para-quem" className="py-5">
-
       <Container>
         <Row className="align-items-center mb-5">
           <Col md={12} className="text-center">
             <h2 className="fw-bold mb-3" style={{ color: "var(--jw-primary)" }}>
-              Sua Casa de Apoio merece um sistema feito sob medida
+              Software de Gestão para Casas de Apoio a Pacientes
             </h2>
             <p
               className="mx-auto"
               style={{ color: "var(--jw-text-muted)", maxWidth: "700px" }}
             >
-              O JotasWeb foi desenvolvido para atender a rotina real das casas de apoio:
+              O JotasWeb é o sistema ideal para <strong>casas de apoio a pacientes</strong> que
+              atendem <strong>Tratamento Fora do Domicílio (TFD)</strong>. Organize o
               recebimento de pacientes, transporte para consultas e exames, controle de
-              diárias e parcerias firmadas com prefeituras.
+              diárias e parcerias firmadas com prefeituras — tudo em um só lugar.
             </p>
           </Col>
         </Row>
