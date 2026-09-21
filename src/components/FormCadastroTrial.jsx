@@ -12,20 +12,56 @@ const ESTADOS = [
 
 const CAMPOS_SEM_UPPERCASE = ["email", "estado", "codigo_cidade", "codigo_bairro"];
 
-function formatarCnpj(valor) {
+// ===== CPF/CNPJ =====
+function formatarCpfCnpj(valor) {
   return valor.replace(/\D/g, "").slice(0, 14);
 }
 
-function formatarTelefone(valor) {
-  const digitos = valor.replace(/\D/g, "").slice(0, 11);
-  if (digitos.length <= 10) {
-    return digitos.replace(/(\d{2})(\d{4})(\d{0,4})/, (_, a, b, c) =>
-      c ? `(${a}) ${b}-${c}` : b ? `(${a}) ${b}` : a ? `(${a}` : ""
+function mascararCpfCnpj(digitos) {
+  if (digitos.length <= 11) {
+    // CPF: 000.000.000-00
+    return digitos.replace(
+      /(\d{3})(\d{3})?(\d{3})?(\d{0,2})/,
+      (_, a, b, c, d) => {
+        let out = a || "";
+        if (b) out += `.${b}`;
+        if (c) out += `.${c}`;
+        if (d) out += `-${d}`;
+        return out;
+      }
     );
   }
-  return digitos.replace(/(\d{2})(\d{5})(\d{0,4})/, (_, a, b, c) =>
-    c ? `(${a}) ${b}-${c}` : b ? `(${a}) ${b}` : a ? `(${a}` : ""
+  // CNPJ: 00.000.000/0000-00
+  return digitos.replace(
+    /(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{0,2})/,
+    (_, a, b, c, d, e) => {
+      let out = a || "";
+      if (b) out += `.${b}`;
+      if (c) out += `.${c}`;
+      if (d) out += `/${d}`;
+      if (e) out += `-${e}`;
+      return out;
+    }
   );
+}
+
+function validarCpf(cpf) {
+  const c = cpf.replace(/\D/g, "");
+  if (c.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(c)) return false;
+
+  const calcDigito = (base, pesoInicial) => {
+    const soma = base
+      .split("")
+      .reduce((acc, num, i) => acc + parseInt(num) * (pesoInicial - i), 0);
+    const resto = (soma * 10) % 11;
+    return resto === 10 ? 0 : resto;
+  };
+
+  const d1 = calcDigito(c.slice(0, 9), 10);
+  const d2 = calcDigito(c.slice(0, 9) + d1, 11);
+
+  return c.slice(9) === `${d1}${d2}`;
 }
 
 function validarCnpj(cnpj) {
@@ -48,6 +84,26 @@ function validarCnpj(cnpj) {
   const d2 = calcDigito(c.slice(0, 12) + d1, pesos2);
 
   return c.slice(12) === `${d1}${d2}`;
+}
+
+function validarCpfCnpj(valor) {
+  const digitos = valor.replace(/\D/g, "");
+  if (digitos.length === 11) return validarCpf(digitos);
+  if (digitos.length === 14) return validarCnpj(digitos);
+  return false;
+}
+// ===== fim CPF/CNPJ =====
+
+function formatarTelefone(valor) {
+  const digitos = valor.replace(/\D/g, "").slice(0, 11);
+  if (digitos.length <= 10) {
+    return digitos.replace(/(\d{2})(\d{4})(\d{0,4})/, (_, a, b, c) =>
+      c ? `(${a}) ${b}-${c}` : b ? `(${a}) ${b}` : a ? `(${a}` : ""
+    );
+  }
+  return digitos.replace(/(\d{2})(\d{5})(\d{0,4})/, (_, a, b, c) =>
+    c ? `(${a}) ${b}-${c}` : b ? `(${a}) ${b}` : a ? `(${a}` : ""
+  );
 }
 
 // NOVO: recebe callback opcional para avisar o pai sobre duplicidade
@@ -89,8 +145,9 @@ function FormCadastroTrial({ onStatusChange }) {
     let valorFormatado = value;
 
     if (name === "cnpj") {
-      valorFormatado = formatarCnpj(value);
-      setCnpjValido(valorFormatado === "" || validarCnpj(valorFormatado));
+      const digitos = formatarCpfCnpj(value);
+      valorFormatado = mascararCpfCnpj(digitos);
+      setCnpjValido(digitos === "" || validarCpfCnpj(digitos));
     } else if (name === "telefone") {
       valorFormatado = formatarTelefone(value);
     } else if (!CAMPOS_SEM_UPPERCASE.includes(name)) {
@@ -179,9 +236,9 @@ function FormCadastroTrial({ onStatusChange }) {
       return;
     }
 
-    if (!validarCnpj(form.cnpj)) {
+    if (!validarCpfCnpj(form.cnpj)) {
       setCnpjValido(false);
-      setErro("Informe um CNPJ válido.");
+      setErro("Informe um CPF ou CNPJ válido.");
       return;
     }
 
@@ -234,36 +291,91 @@ function FormCadastroTrial({ onStatusChange }) {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Nome da Empresa *</Form.Label>
-              <Form.Control type="text" name="nomeEmpresa" value={form.nomeEmpresa} onChange={handleChange} required maxLength={80} style={{ textTransform: "uppercase" }} />
+              <Form.Control
+                type="text"
+                name="nomeEmpresa"
+                value={form.nomeEmpresa}
+                onChange={handleChange}
+                required
+                maxLength={80}
+                style={{ textTransform: "uppercase" }}
+              />
             </Form.Group>
+
             <Form.Group className="mb-3">
-              <Form.Label>CNPJ *</Form.Label>
-              <Form.Control type="text" name="cnpj" value={form.cnpj} onChange={handleChange} required placeholder="Somente números" maxLength={14} isInvalid={!cnpjValido} />
-              <Form.Control.Feedback type="invalid">CNPJ inválido.</Form.Control.Feedback>
+              <Form.Label>CPF ou CNPJ *</Form.Label>
+              <Form.Control
+                type="text"
+                name="cnpj"
+                value={form.cnpj}
+                onChange={handleChange}
+                required
+                placeholder="Digite seu CPF ou CNPJ"
+                maxLength={18}
+                isInvalid={!cnpjValido}
+              />
+              <Form.Control.Feedback type="invalid">
+                CPF ou CNPJ inválido.
+              </Form.Control.Feedback>
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Nome do Responsável *</Form.Label>
-              <Form.Control type="text" name="nomeResponsavel" value={form.nomeResponsavel} onChange={handleChange} required maxLength={80} style={{ textTransform: "uppercase" }} />
+              <Form.Control
+                type="text"
+                name="nomeResponsavel"
+                value={form.nomeResponsavel}
+                onChange={handleChange}
+                required
+                maxLength={80}
+                style={{ textTransform: "uppercase" }}
+              />
             </Form.Group>
+
             <Row>
               <Col md={7}>
                 <Form.Group className="mb-3">
                   <Form.Label>E-mail *</Form.Label>
-                  <Form.Control type="email" name="email" value={form.email} onChange={handleChange} required maxLength={80} isInvalid={!emailValido} />
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    maxLength={80}
+                    isInvalid={!emailValido}
+                  />
                   <Form.Control.Feedback type="invalid">Digite um e-mail válido.</Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={5}>
                 <Form.Group className="mb-3">
                   <Form.Label>Telefone/WhatsApp</Form.Label>
-                  <Form.Control type="text" name="telefone" value={form.telefone} onChange={handleChange} maxLength={15} placeholder="(00) 00000-0000" />
+                  <Form.Control
+                    type="text"
+                    name="telefone"
+                    value={form.telefone}
+                    onChange={handleChange}
+                    maxLength={15}
+                    placeholder="(00) 00000-0000"
+                  />
                 </Form.Group>
               </Col>
             </Row>
+
             <Form.Group className="mb-3">
               <Form.Label>Endereço</Form.Label>
-              <Form.Control type="text" name="endereco" value={form.endereco} onChange={handleChange} maxLength={100} placeholder="Rua, número, complemento" style={{ textTransform: "uppercase" }} />
+              <Form.Control
+                type="text"
+                name="endereco"
+                value={form.endereco}
+                onChange={handleChange}
+                maxLength={100}
+                placeholder="Rua, número, complemento"
+                style={{ textTransform: "uppercase" }}
+              />
             </Form.Group>
+
             <Row>
               <Col md={3}>
                 <Form.Group className="mb-3">
@@ -279,7 +391,13 @@ function FormCadastroTrial({ onStatusChange }) {
               <Col md={5}>
                 <Form.Group className="mb-3">
                   <Form.Label>Cidade *</Form.Label>
-                  <Form.Select name="codigo_cidade" value={form.codigo_cidade} onChange={handleCidadeChange} required disabled={!form.estado || loadingCidades}>
+                  <Form.Select
+                    name="codigo_cidade"
+                    value={form.codigo_cidade}
+                    onChange={handleCidadeChange}
+                    required
+                    disabled={!form.estado || loadingCidades}
+                  >
                     <option value="">{loadingCidades ? "Carregando..." : "Selecione"}</option>
                     {cidades.map((c) => (
                       <option key={c.codigo} value={c.codigo}>{c.nomecidade}</option>
@@ -290,7 +408,12 @@ function FormCadastroTrial({ onStatusChange }) {
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label>Bairro</Form.Label>
-                  <Form.Select name="codigo_bairro" value={form.codigo_bairro} onChange={handleChange} disabled={!form.codigo_cidade || loadingBairros}>
+                  <Form.Select
+                    name="codigo_bairro"
+                    value={form.codigo_bairro}
+                    onChange={handleChange}
+                    disabled={!form.codigo_cidade || loadingBairros}
+                  >
                     <option value="">{loadingBairros ? "Carregando..." : "Selecione"}</option>
                     {bairros.map((b) => (
                       <option key={b.codigo} value={b.codigo}>{b.nomebairro}</option>
@@ -299,6 +422,7 @@ function FormCadastroTrial({ onStatusChange }) {
                 </Form.Group>
               </Col>
             </Row>
+
             <Button type="submit" variant="primary" size="lg" className="w-100" disabled={loading}>
               {loading ? (
                 <>
